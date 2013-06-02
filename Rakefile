@@ -66,21 +66,10 @@ PODS_ALLOWED_TO_FAIL = {
     'vfrReader',
   ],
 
-  # Many of these just need to the support for dashes introduced in CP 0.17
   "The version should be included in the Git tag." => [
     'iOS-Hierarchy-Viewer',
   ],
 
-  "Rake::FileList is deprecated, use `exclude_files` (source_files)." => [
-    "libsodium",
-    "MapBox",
-    "MAZeroingWeakRef",
-    "MKNetworkKit",
-    "ReactiveCocoa",
-    "SinglySDK",
-    "TwUI",
-    "UrbanAirship-iOS-SDK",
-  ],
 }
 
 
@@ -190,11 +179,13 @@ task :default => :validate
 # @return [Bool] If the spec can be accepted
 #
 def check_if_can_be_accepted(spec, spec_path)
-  # previous_spec_contents = previous_version_of_spec(spec_path)
-  acceptor = Pod::Source::Acceptor.new('.')
-  errors = acceptor.analyze(spec)
+  previous_spec_contents = previous_version_of_spec(spec_path)
+  if previous_spec_contents
+    previous_spec = Pod::Specification.from_string(previous_spec_contents, spec_path)
+  end
+  errors = Pod::Source::Acceptor.new('.').analyze(spec, previous_spec)
   errors.each do |error|
-    puts red("- #{error}")
+    puts red("    - ERROR | #{error}")
   end
   errors.count.zero?
 end
@@ -261,7 +252,8 @@ end
 #         commit.
 #
 def previous_version_of_spec(spec_path)
-  `git show HEAD~1:#{spec_path}`
+  contents = `git show HEAD~1:#{spec_path} 2>/dev/null`
+  contents if $?.to_i.zero?
 end
 
 # group UI helpers
