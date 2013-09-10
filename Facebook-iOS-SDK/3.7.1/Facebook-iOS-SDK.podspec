@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.author       =  'Facebook'
   s.source       =  { :git => 'https://github.com/facebook/facebook-ios-sdk.git', :tag => 'sdk-version-3.7.1' }
   s.source_files =  'src/*.{h,m}', 'src/Base64/*.{h,m}', 'src/Cryptography/*.{h,m}'
-  s.resources    =  'src/FacebookSDKResources.bundle', 'src/FBUserSettingsViewResources.bundle'
+  s.resources    =  'src/FBUserSettingsViewResources.bundle'
   s.header_dir   =  'FacebookSDK'
   s.weak_frameworks = 'Accounts', 'AdSupport', 'Social', 'Security'
   s.framework = 'CoreLocation'
